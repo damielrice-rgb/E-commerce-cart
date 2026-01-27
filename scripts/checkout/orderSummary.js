@@ -5,6 +5,8 @@ import {hello} from 'https://unpkg.com/supersimpledev@1.0.1/hello.esm.js';
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 import {deliveryOptions, getDeliveryOption} from '../../data/deliveryOptions.js';
 import {renderPaymentSummary} from './paymentSummary.js';
+import {updateQuantity} from '../../data/cart.js';
+import {updateCheckoutItemCount} from '../checkout.js';
 
  export function renderOrderSummary() {
 
@@ -51,7 +53,7 @@ import {renderPaymentSummary} from './paymentSummary.js';
                     <span>
                       Quantity: <span class="quantity-label">${cartItem.quantity}</span>
                     </span>
-                    <span class="update-quantity-link link-primary">
+                    <span class="update-quantity-link link-primary js-update-link" data-product-id="${matchingProduct.id}">
                       Update
                     </span>
                     <span class="delete-quantity-link link-primary js-delete-link js-delete-link-${matchingProduct.id}" data-product-id="${matchingProduct.id}">
@@ -123,8 +125,10 @@ import {renderPaymentSummary} from './paymentSummary.js';
           
         );
         container.remove();
+        
 
         renderPaymentSummary();
+        updateCheckoutItemCount();
     });
   });
 
@@ -135,6 +139,20 @@ import {renderPaymentSummary} from './paymentSummary.js';
       updateDeliveryOption(productId, deliveryOptionId);
       renderOrderSummary();
       renderPaymentSummary();
+    });
+  });
+
+  document.querySelectorAll('.js-update-link').forEach((link) => {
+    link.addEventListener('click', () => {
+      const productId = link.dataset.productId;
+      const newQuantity = Number(prompt('Enter new quantity'));
+
+      if(newQuantity > 0) {
+        updateQuantity(productId, newQuantity);
+        renderOrderSummary();
+        renderPaymentSummary();
+        updateCheckoutItemCount();
+      }
     });
   });
   }

@@ -80,8 +80,8 @@ updateDeliveryOption(productId, deliveryOptionId){
 }
 
 
-const cart = new Cart('cart-oop');
-const businessCart = new Cart('cart-business');
+export const cart = new Cart('cart-oop');
+export const businessCart = new Cart('cart-business');
 
 
 
